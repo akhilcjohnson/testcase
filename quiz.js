@@ -284,6 +284,7 @@ document.addEventListener("DOMContentLoaded", initUI);
 
 module.exports = {
     testEnvironment: 'jsdom',
+    quizData,
     initUI,
     startQuiz,
     showQuestion,

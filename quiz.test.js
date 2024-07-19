@@ -1,5 +1,5 @@
 const {
-    initUI, startQuiz, showQuestion, handleNextButtonClick,
+    initUI, startQuiz, showQuestion, handleNextButtonClick, quizData,
     checkAnswers, showEndPage, updateQuestionCounter
 } = require('./quiz'); // Import necessary functions from the quiz module.
 
@@ -24,25 +24,29 @@ function setupDOM() {
 
 // Describe block for tests related to the initial state of the UI.
 describe('Initialization Tests', () => {
-    beforeEach(() => {
-        setupDOM(); // Reset DOM before each test to ensure a clean state.
-    });
+  beforeEach(() => {
+    setupDOM(); // Assuming you have a function that sets up the DOM.
+  });
 
-    test('UI initializes correctly', () => {
-        const startButton = document.querySelector('.start-button');
-        expect(startButton).not.toBeNull(); // Check if the start button is correctly initialized.
-    });
+  test('UI initializes correctly', () => {
+    expect(document.querySelector('.start-button')).not.toBeNull();
+    expect(document.querySelector('.end-page')).not.toBeNull();
+    expect(document.querySelector('.next-button')).not.toBeNull();
+    expect(document.querySelector('.question-counter')).not.toBeNull();
+    expect(document.getElementById('options-container')).not.toBeNull();
+    expect(document.querySelector('.start-button')).not.toBeNull();
+  });
 
-    test('Start page is displayed initially', () => {
-        const startPage = document.querySelector('.start-page');
-        expect(startPage.style.display).not.toBe('none'); // Ensure the start page is visible on load.
-    });
+  test('Start page is displayed initially', () => {
+    expect(document.querySelector('.start-page').style.display).not.toBe('none');
+  });
 
-    test('Start button text is set correctly', () => {
-        const startButton = document.querySelector('.start-button');
-        expect(startButton.textContent).toBe('Start'); // Confirm that the start button has the correct text.
-    });
+  test('Start button text is set correctly', () => {
+    expect(document.querySelector('.start-button').textContent).toBe('Start');
+  });
 });
+
+
 
 // Describe block for testing navigation within the quiz.
 describe('Quiz Navigation Tests', () => {
@@ -139,10 +143,21 @@ describe('Navigation Tests', () => {
     test('End page is displayed after the last question', () => {
         const startButton = document.querySelector('.start-button');
         startButton.click(); // Begin the quiz.
-        for (let i = 0; i < 4; i++) {
-            handleNextButtonClick(); // Navigate through all questions.
+    
+        // Navigate through all questions.
+        for (let i = 0; i < quizData.length - 1; i++) {
+            handleNextButtonClick();
         }
+
+        // Check if the text of the next button has changed to "Submit" on the last question
+        const nextButton = document.querySelector('.next-button');
+        expect(nextButton.textContent).toBe('Next');
+    
+        // Click the "Submit" button on the last question
+        nextButton.click();
+    
         const endPage = document.querySelector('.end-page');
-        expect(endPage.style.display).toBe('block'); // Verify the end page is displayed after the last question.
-});
+        expect(endPage.style.display).toBe('block'); // Verify the end page is displayed after clicking "Submit".
+    });
+    
 });
