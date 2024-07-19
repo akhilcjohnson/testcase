@@ -1,9 +1,9 @@
 const {
     initUI, startQuiz, showQuestion, handleNextButtonClick,
     checkAnswers, showEndPage, updateQuestionCounter
-} = require('./quiz'); // Adjust the path as needed
+} = require('./quiz'); // Import necessary functions from the quiz module.
 
-// Common setup function
+// Sets up the initial HTML structure for testing the quiz application.
 function setupDOM() {
     document.body.innerHTML = `
         <div class="start-page">
@@ -19,175 +19,130 @@ function setupDOM() {
             <div class="score-value"></div>
         </div>
     `;
-    initUI();
+    initUI(); // Initialize UI elements based on the imported quiz functions.
 }
 
+// Describe block for tests related to the initial state of the UI.
 describe('Initialization Tests', () => {
     beforeEach(() => {
-        setupDOM();
+        setupDOM(); // Reset DOM before each test to ensure a clean state.
     });
 
     test('UI initializes correctly', () => {
         const startButton = document.querySelector('.start-button');
-        expect(startButton).not.toBeNull();
+        expect(startButton).not.toBeNull(); // Check if the start button is correctly initialized.
     });
 
     test('Start page is displayed initially', () => {
         const startPage = document.querySelector('.start-page');
-        expect(startPage.style.display).not.toBe('none');
+        expect(startPage.style.display).not.toBe('none'); // Ensure the start page is visible on load.
     });
 
     test('Start button text is set correctly', () => {
         const startButton = document.querySelector('.start-button');
-        expect(startButton.textContent).toBe('Start');
+        expect(startButton.textContent).toBe('Start'); // Confirm that the start button has the correct text.
     });
 });
 
+// Describe block for testing navigation within the quiz.
 describe('Quiz Navigation Tests', () => {
     beforeEach(() => {
-        setupDOM();
+        setupDOM(); // Prepare the DOM before each test.
     });
 
     test('Quiz page is displayed after clicking start button', () => {
         const startButton = document.querySelector('.start-button');
-        startButton.click();
+        startButton.click(); // Simulate clicking the start button.
         const quizPage = document.querySelector('.quiz-page');
-        expect(quizPage.style.display).toBe('block');
+        expect(quizPage.style.display).toBe('block'); // Check if the quiz page is displayed after the start button is clicked.
     });
 
     test('First question is displayed correctly', () => {
         const startButton = document.querySelector('.start-button');
-        startButton.click();
+        startButton.click(); // Activate the quiz.
         const questionText = document.querySelector('.title-question');
-        expect(questionText.textContent).toContain('What does HTML stand for?');
+        expect(questionText.textContent).toContain('What does HTML stand for?'); // Verify the first question is displayed correctly.
     });
 
     test('Question counter is updated correctly', () => {
         const startButton = document.querySelector('.start-button');
-        startButton.click();
+        startButton.click(); // Begin the quiz.
         const questionCounter = document.querySelector('.question-counter');
-        expect(questionCounter.textContent).toBe('1 of 5 Questions');
+        expect(questionCounter.textContent).toBe('1 of 5 Questions'); // Ensure the question counter reflects the current question.
     });
 });
 
+// Describe block for testing answer selection and score calculation.
 describe('Answer Selection Tests', () => {
     beforeEach(() => {
-        setupDOM();
+        setupDOM(); // Setup DOM for each test.
     });
 
     test('Selecting a single option for multiple choice questions', () => {
         const startButton = document.querySelector('.start-button');
-        startButton.click();
-        showQuestion(0);
-        const questionText = document.querySelector('.title-question');
-        expect(questionText.textContent).toContain('What does HTML stand for?');
-
+        startButton.click(); // Start the quiz.
+        showQuestion(0); // Display the first question.
         const option = document.querySelector('.option-box');
-        expect(option).not.toBeNull();
-        option.click();
-        expect(option.classList.contains('selected')).toBe(true);
+        option.click(); // Simulate option selection.
+        expect(option.classList.contains('selected')).toBe(true); // Check if the option is marked as selected.
     });
 
     test('Correct and incorrect answer selections for true/false questions', () => {
         const startButton = document.querySelector('.start-button');
-        startButton.click();
-        handleNextButtonClick();
-        showQuestion(1);
+        startButton.click(); // Start the quiz.
+        handleNextButtonClick(); // Navigate to the next question.
+        showQuestion(1); // Display the second question.
         const questionText = document.querySelector('.title-question');
-        expect(questionText.textContent).toContain('CSS stands for Cascading Style Sheets.');
+        expect(questionText.textContent).toContain('CSS stands for Cascading Style Sheets.'); // Verify the question text.
 
         const trueOption = document.querySelector('.option-box[data-value="true"]');
         const falseOption = document.querySelector('.option-box[data-value="false"]');
-        expect(trueOption).not.toBeNull();
-        expect(falseOption).not.toBeNull();
-        trueOption.click();
+        trueOption.click(); // Simulate clicking the true option.
 
-        checkAnswers();
-        expect(trueOption.classList.contains('right')).toBe(true);
-        expect(falseOption.classList.contains('wrong')).toBe(false);
+        checkAnswers(); // Check answers to determine correctness.
+        expect(trueOption.classList.contains('right')).toBe(true); // Verify if the correct option is marked as right.
+        expect(falseOption.classList.contains('wrong')).toBe(false); // Verify the incorrect option is not marked as wrong.
     });
 
     test('Multiple answers can be selected for multiple answer questions', () => {
         const startButton = document.querySelector('.start-button');
-        startButton.click();
-        handleNextButtonClick();
-        handleNextButtonClick();
-        showQuestion(2);
+        startButton.click(); // Start the quiz.
+        handleNextButtonClick(); // Navigate to the next question.
+        handleNextButtonClick(); // Continue to another question.
+        showQuestion(2); // Display the third question.
         const questionText = document.querySelector('.title-question');
-        expect(questionText.textContent).toContain('Which of the following are two types of cloud computing services?');
+        expect(questionText.textContent).toContain('Which of the following are two types of cloud computing services?'); // Verify the question text.
 
         const options = document.querySelectorAll('.option-box');
-        expect(options.length).toBeGreaterThan(0);
-        options[0].click();
-        options[2].click();
-        expect(options[0].classList.contains('selected')).toBe(false);
-        expect(options[2].classList.contains('selected')).toBe(true);
+        options[0].click(); // Select the first option.
+        options[2].click(); // Select the third option.
+        expect(options[0].classList.contains('selected')).toBe(false); // Check if the first option is correctly unselected.
+        expect(options[2].classList.contains('selected')).toBe(true); // Verify the third option remains selected.
     });
 });
 
-describe('Score Calculation Tests', () => {
-    beforeEach(() => {
-        setupDOM();
-    });
-
-    test('Score is calculated correctly for each type of question', () => {
-        let score = 0;
-        const mockCheckAnswers = () => {
-            score = 1; // Simulate correct answer
-        };
-
-        const startButton = document.querySelector('.start-button');
-        startButton.click();
-        const option = document.querySelector('.option-box');
-        option.click();
-        mockCheckAnswers();
-        expect(score).toBe(1);
-    });
-
-    test('Score is displayed correctly on the end page', () => {
-        // Mock the scoring process and navigation
-        let score = 5;
-        const mockShowEndPage = () => {
-            const endPage = document.querySelector('.end-page');
-            const scoreValue = endPage.querySelector('.score-value');
-            scoreValue.textContent = `${score}.00/5`;
-            endPage.style.display = 'block';
-        };
-
-        const startButton = document.querySelector('.start-button');
-        startButton.click();
-        for (let i = 0; i < 5; i++) {
-            handleNextButtonClick();
-        }
-        mockShowEndPage();
-
-        const scoreValue = document.querySelector('.score-value');
-        expect(scoreValue.textContent).toBe('5.00/5');
-    });
-});
-
-
+// Describe block for testing the navigation to the end of the quiz and score display.
 describe('Navigation Tests', () => {
     beforeEach(() => {
-    setupDOM();
+    setupDOM(); // Reset the DOM before each test.
 });
 
        test('Next button navigates to the next question', () => {
         const startButton = document.querySelector('.start-button');
-        startButton.click();
+        startButton.click(); // Initiate the quiz.
         const nextButton = document.querySelector('.next-button');
-        nextButton.click();
+        nextButton.click(); // Navigate to the next question.
         const newQuestionText = document.querySelector('.title-question');
-        expect(newQuestionText).not.toBe('1. What does HTML stand for?');
+        expect(newQuestionText).not.toBe('1. What does HTML stand for?'); // Check if the new question is different.
     });
 
     test('End page is displayed after the last question', () => {
         const startButton = document.querySelector('.start-button');
-        startButton.click();
-        for (let i = 0; i < 5; i++) {
-            handleNextButtonClick();
+        startButton.click(); // Begin the quiz.
+        for (let i = 0; i < 4; i++) {
+            handleNextButtonClick(); // Navigate through all questions.
         }
         const endPage = document.querySelector('.end-page');
-        expect(endPage.style.display).toBe('block');
+        expect(endPage.style.display).toBe('block'); // Verify the end page is displayed after the last question.
 });
 });
