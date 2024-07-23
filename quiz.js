@@ -1,7 +1,7 @@
 const startPageData = {
     title: 'Simple Quiz',
     buttonText: 'Start',
-    imageUrl: '/brain.svg'
+    imageUrl: '/testcase/brain.svg'
 };
 
 const quizData = [

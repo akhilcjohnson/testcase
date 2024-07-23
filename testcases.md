@@ -42,9 +42,60 @@ Ensure proper navigation within the quiz.
    - **Expected Result**: The question counter should correctly reflect the number of the current question.
 
 ## Answer Selection Tests
-Tests related to selecting answers during the quiz.
+Tests to ensure that the application accurately handles user interactions during answer selection.
 
-... (continue listing other tests as above)
+1. Single Option Selection for Multiple Choice Questions
+    - **Description**: Verify that only one option can be selected in a multiple-choice question and that it is visually indicated.
+    - **Steps**:
+    1. Start the quiz.
+    2. Navigate to a multiple-choice question.
+    3. Select an option.
+    - **Expected Result**: The selected option should be highlighted as 'selected', and no other options should be highlighted.
+
+2. Correct and Incorrect Answer Selections for True/False Questions
+    - **Description**: Ensure correct processing of selections for true/false questions, and allow users to change their selection.
+    - **Steps**:
+    1. Start the quiz and navigate to a true/false question.
+    2. Select 'True', then switch to 'False'.
+    - **Expected Result**: Initially, 'True' should be highlighted; after changing, only 'False' should be highlighted. Correct selections are marked 'right', and incorrect selections are not marked 'wrong'.
+
+3. Multiple Answers Selection for Multiple Answer Questions
+    - **Description**: Test that multiple answers can be selected and deselected, reflecting user choices accurately for questions allowing multiple correct answers.
+    - **Steps**:
+    1. Start the quiz.
+    2. Navigate to a multiple answer question.
+    3. Select multiple valid options.
+    - **Expected Result**: All selected options should be highlighted. Multiple selections should be possible without automatically deselecting others.
+
+4. Selection Persistence Across Navigation
+    - **Description**: Confirm that previously selected answers are remembered and displayed correctly when navigating back to a previously answered question.
+    - **Steps**:
+    1. Answer the first question.
+    2. Navigate to the next question and then back to the first.
+    - **Expected Result**: The original selections for the first question should still be marked as selected upon return.
+
+5. Deselection of Options in Multiple Choice Questions
+    - **Description**: Test the ability to deselect a chosen option in a multiple-choice question, verifying that options can be unselected.
+    - **Steps**:
+    1. Start the quiz and select an option in a multiple-choice question.
+    2. Deselect the same option.
+    - **Expected Result**: The option should no longer be highlighted as selected after deselection.
+
+6. Deselection of Options in Multiple Answer Questions
+    - **Description**: Ensure that options in multiple answer questions can be selected and then deselected.
+    - **Steps**:
+    1. Navigate to a multiple answer question.
+    2. Select and then deselect an option.
+    - **Expected Result**: The option should be selectable and then deselected, with no residual selection marking when deselected.
+
+7. Multiple Options Selection and Deselection in Multiple Answer Questions
+    - **Description**: Verify the functionality of selecting and deselecting multiple options in a multiple answer question.
+    - **Steps**:
+    1. Navigate to a multiple answer question.
+    2. Select the first option, verify selection.
+    3. Select the second option, verify both selections.
+    4. Deselect the second option, verify it is deselected while the first remains selected.
+    - **Expected Result**: Each option should respond to selections and deselections independently, correctly reflecting the user's interaction.
 
 ## Score Calculation Tests
 Ensure that scoring works as expected.

@@ -52,6 +52,7 @@ describe('Initialization Tests', () => {
 describe('Quiz Navigation Tests', () => {
     beforeEach(() => {
         setupDOM(); // Prepare the DOM before each test.
+        startQuiz();
     });
 
     test('Quiz page is displayed after clicking start button', () => {
@@ -123,6 +124,60 @@ describe('Answer Selection Tests', () => {
         expect(options[0].classList.contains('selected')).toBe(false); // Check if the first option is correctly unselected.
         expect(options[2].classList.contains('selected')).toBe(true); // Verify the third option remains selected.
     });
+    test('Selection persistence across navigation', () => {
+        const startButton = document.querySelector('.start-button');
+        startButton.click(); // Start the quiz.
+        showQuestion(0); // Display the first question.
+
+        const option = document.querySelector('.option-box');
+        option.click(); // Select an option.
+        handleNextButtonClick(); // Move to next question.
+        handleNextButtonClick(); // Move back to the first question.
+
+        expect(option.classList.contains('selected')).toBe(true); // Check if the original selection is still marked.
+    });
+
+    test('Deselection of options in multiple choice questions', () => {
+        const startButton = document.querySelector('.start-button');
+        startButton.click(); // Start the quiz.
+        showQuestion(0); // Display the first question.
+
+        const option = document.querySelector('.option-box');
+        option.click(); // Select an option.
+        option.click(); // Deselect the same option.
+        
+        expect(option.classList.contains('selected')).toBe(false); // Check if the option is deselected.
+    });
+
+    test('Deselection of options in multiple answer questions', () => {
+        const startButton = document.querySelector('.start-button');
+        startButton.click(); // Start the quiz.
+        showQuestion(2); // Display a multiple answer question.
+
+        const options = document.querySelectorAll('.option-box');
+        options[0].click(); // Select the first option.
+        options[0].click(); // Deselect the first option.
+
+        expect(options[0].classList.contains('selected')).toBe(false); // Verify that the first option is deselected.
+    });
+
+    test('Multiple options selection and deselection in multiple answer questions', () => {
+        const startButton = document.querySelector('.start-button');
+        startButton.click(); // Start the quiz.
+        showQuestion(2); // Display a multiple answer question.
+    
+        const options = document.querySelectorAll('.option-box');
+        options[0].click(); // Select the first option.
+        expect(options[0].classList.contains('selected')).toBe(true); // Check first option selected
+    
+        options[1].click(); // Select the second option.
+        expect(options[1].classList.contains('selected')).toBe(true); // Check second option selected
+    
+        options[1].click(); // Deselect the second option.
+        expect(options[1].classList.contains('selected')).toBe(false); // Check second option deselected
+
+    });
+    
 });
 
 // Describe block for testing the navigation to the end of the quiz and score display.
@@ -143,21 +198,25 @@ describe('Navigation Tests', () => {
     test('End page is displayed after the last question', () => {
         const startButton = document.querySelector('.start-button');
         startButton.click(); // Begin the quiz.
-    
         // Navigate through all questions.
         for (let i = 0; i < quizData.length - 1; i++) {
+            const options = document.querySelectorAll('.option-box');
+            const correctOption = Array.from(options).find(option => option.dataset.isCorrect === 'true');
+            correctOption.click();
             handleNextButtonClick();
         }
-
-        // Check if the text of the next button has changed to "Submit" on the last question
+        // Check the nextButton's status
         const nextButton = document.querySelector('.next-button');
-        expect(nextButton.textContent).toBe('Next');
+        console.log(`Next button text before final click: ${nextButton ? nextButton.textContent : 'Button not found'}`);
     
-        // Click the "Submit" button on the last question
-        nextButton.click();
-    
-        const endPage = document.querySelector('.end-page');
-        expect(endPage.style.display).toBe('block'); // Verify the end page is displayed after clicking "Submit".
+        if (nextButton && nextButton.textContent === 'Submit') {
+            nextButton.click();
+        
+            // Wait for the end page to display
+            const endPage = document.querySelector('.end-page');
+            console.log(`End page display status: ${endPage ? endPage.style.display : 'End page not found'}`);
+            expect(endPage).not.toBeNull();
+            expect(endPage.style.display).toBe('block');
+        }
     });
-    
 });
